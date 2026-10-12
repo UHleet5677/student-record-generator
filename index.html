@@ -567,8 +567,8 @@
       <!-- 예시 불러오기 퀵 버튼 -->
       <div>
         <span style="font-size:0.8rem; color:var(--text-muted); margin-right:6px;">예시 입력:</span>
-        <span class="sample-pill" onclick="loadSample(1)">수학 세특 예시</span>
-        <span class="sample-pill" onclick="loadSample(2)">과학 세특 예시</span>
+        <span class="sample-pill" onclick="loadSample(1)">국어 세특 예시</span>
+        <span class="sample-pill" onclick="loadSample(2)">사회 세특 예시</span>
         <span class="sample-pill" onclick="loadSample(3)">행동특성(행특) 예시</span>
         <span class="sample-pill" onclick="loadSample(4)">동아리/진로 예시</span>
       </div>
@@ -597,14 +597,14 @@
         </div>
         <div class="form-group">
           <label for="subjectName">과목명 / 활동명</label>
-          <input type="text" id="subjectName" placeholder="예: 수학, 통합과학, 학급자치 등" value="수학">
+          <input type="text" id="subjectName" placeholder="예: 국어, 문학, 통합사회, 현대사 등" value="국어">
         </div>
       </div>
 
       <div class="form-group">
         <label for="keywords" class="required">핵심 키워드 및 관찰 내용</label>
         <textarea id="keywords" placeholder="쉼표(,)나 줄바꿈으로 키워드를 적어주세요.
-예: 이차함수 실생활 적용 탐구, 수학적 문제해결력, 적극적인 질문 태도, 멘토링 활동, 끈기 있는 태도">이차함수 실생활 적용 탐구, 수학적 문제해결력, 적극적인 질문 태도, 또래 멘토링 활동</textarea>
+예: 문학적 비평 능력, 논리적 사고 능력, 비판적 읽기 역량, 텍스트 맥락 파악, 토론 및 논증적 글쓰기">문학적 비평 능력, 논리적 사고 능력, 비판적 읽기 역량, 텍스트 맥락 파악, 적극적인 토론 참여</textarea>
         
         <div style="font-size: 0.8rem; color: var(--text-muted); margin-top: 4px;">
           추천 키워드 (클릭하여 추가):
@@ -839,25 +839,26 @@ function attachJosa(word, josaPair) {
 // 추천 키워드 사전
 const SUGGESTIONS = {
   subject: [
-    "수학적 문제해결력", "실생활 연계 적용", "논리적 사고력", "적극적인 질문 태도",
-    "자기주도 학습능력", "또래 멘토링 활동", "오답 분석 습관", "심화 과제 탐구", "모둠 활동 협업",
-    "자료 분석 능력", "창의적 접근법", "발표 및 전달력", "개념 연계 이해", "지속적인 학업 열의"
+    "문학적 비평 능력", "논리적 사고 능력", "비판적 읽기 역량", "텍스트 맥락 파악", "시적 화자의 정서 분석",
+    "고전 문학의 현대적 재해석", "논증적 글쓰기", "토론 및 반론 제기", "사회 현상 다각적 고찰", "인문학적 통찰",
+    "사회적 쟁점 분석", "설득력 있는 어휘 구사", "비판적 미디어 리터러시", "사료 비판 및 역사적 맥락 이해", "적극적인 독서 태도",
+    "공동체 가치 탐구", "의견 조율 및 발표력", "자기주도 학습능력", "심화 과제 탐구"
   ],
   behavior: [
     "성실하고 책임감 있는 태도", "또래 관계 원만", "경청과 배려심", "학급 궂은일 솔선수범", "공감 능력",
     "규칙 준수", "긍정적인 마인드", "갈등 중재 능력", "예의 바른 언행", "자기 성찰 태도",
-    "리더십 발휘", "주변 친구 격려", "솔직하고 당당한 태도", "모범적인 생활 습관"
+    "민주시민 의식", "주변 친구 격려", "솔직하고 당당한 태도", "모범적인 생활 습관"
   ],
   career: [
-    "진로 탐색 열의", "전공 적합성", "관련 도서 독서", "직업인 멘토링 참여", "자기 이해도 높음",
-    "학습 계획 수립", "전공 관련 보고서 작성", "진로 로드맵 구체화", "전문성 함양 노력"
+    "인문·사회 분야 진로 탐색", "전공 적합성", "관련 도서 심층 독서", "사회 문제 해결 방안 모색", "자기 이해도 높음",
+    "학습 계획 수립", "시사·인문 보고서 작성", "진로 로드맵 구체화", "전문성 함양 노력"
   ],
   club: [
-    "동아리 활동 주도", "부원 간 화합 도모", "프로젝트 기획 및 완수", "실험·실습 참여도", "창의적 아이디어 제시",
-    "역할 분담 충실", "정기 발표회 준비", "결과물 포트폴리오 제작", "끈기 있는 탐구 자세"
+    "독서·토론 동아리 주도", "부원 간 화합 도모", "시사 쟁점 토론 기획", "비판적 미디어 리터러시", "창의적 아이디어 제시",
+    "역할 분담 충실", "문집/보고서 발간", "결과물 포트폴리오 제작", "끈기 있는 탐구 자세"
   ],
   autonomous: [
-    "학급 1인 1역할 성실 수행", "학급 회의 적극 참여", "환경 정화 솔선수범", "체육대회 협동심",
+    "학급 1인 1역할 성실 수행", "학급 자치 회의 주도", "환경 정화 솔선수범", "체육대회 협동심",
     "학교 행사 능동적 참여", "민주시민 의식", "공동체 규칙 준수", "급우 간 유대감 형성"
   ]
 };
@@ -866,20 +867,20 @@ const SUGGESTIONS = {
 const TEMPLATES = {
   subject: {
     intros: [
-      "{subject} 수업에 매시간 높은 집중력과 열의를 보이며, 스스로 질문하고 깊이 있게 고민하는 자기주도적 학습 태도가 돋보이는 학생임.",
-      "{subject} 교과에 대한 남다른 학업적 호기심과 성실한 참여 태도를 바탕으로, 학습한 개념을 다각도로 이해하고 확장하려는 노력이 돋보임.",
-      "매 수업 시간마다 성실하고 진지한 자세로 임하며, 교과 지식을 단순히 수용하는 데 그치지 않고 본인만의 논리로 정리하는 역량이 우수함.",
-      "{subject} 과목의 기본 개념을 탄탄히 다지며, 새로운 학습 주제를 마주할 때마다 주도적으로 탐구 과제를 설정하고 해결해 나가는 적극성을 지님."
+      "{subject} 수업에 매시간 높은 집중력과 지적 호기심을 보이며, 텍스트의 맥락을 깊이 있게 통찰하고 비판적으로 사유하는 자기주도적 학습 태도가 돋보이는 학생임.",
+      "{subject} 교과에 대한 남다른 인문학적 감수성과 논리적 사고력을 바탕으로, 학습한 개념을 사회문화적 맥락과 연계하여 다각도로 해석하려는 노력이 돋보임.",
+      "매 수업 시간마다 성실하고 진지한 자세로 텍스트를 분석하며, 교과 지식을 단순히 수용하는 데 그치지 않고 본인만의 논리적인 언어로 정리하여 표현하는 역량이 우수함.",
+      "{subject} 과목의 기본 개념을 탄탄히 다지며, 새로운 제재나 쟁점을 마주할 때마다 주도적으로 탐구 과제를 설정하고 설득력 있는 논거를 도출해 내는 적극성을 지님."
     ],
     bodies: [
-      "특히 '{keywords}' 관련 단원을 학습하면서 {kw1_ul} 깊이 있게 탐구하고 {kw2_eul} 발휘하여 학습에 주도적으로 참여함. 복잡한 문제를 접했을 때 포기하지 않고 다각적인 접근법을 시도하며 끈기 있게 결론을 도출해 내는 모습을 보임.",
-      "수행평가 및 모둠 탐구 활동 중 '{keywords}' 주제를 중심으로 탐색하며, {kw1_eul} 바탕으로 논리적인 분석력을 발휘함. 또한 모둠원들과의 토의 과정에서 {kw2_wa} 소통을 이끌어 팀의 학습 효율을 높이는 데 크게 기여함.",
-      "교과 심화 탐구 과정에서 '{keywords}'에 주목하여, {kw1_ro} 관련 원리를 실제 사례와 접목하여 분석함. 과제 수행 과정에서 드러난 {kw2_ui} 자세는 또래 학습자들에게도 긍정적인 자극을 줌."
+      "특히 '{keywords}' 관련 제재를 학습하면서 {kw1_ul} 깊이 있게 발휘하고 {kw2_eul} 바탕으로 탐구 활동에 주도적으로 참여함. 복잡한 쟁점이나 텍스트를 접했을 때 다각적인 관점에서 접근하며 타당한 근거를 들어 끈기 있게 결론을 도출해 내는 모습을 보임.",
+      "수행평가 및 모둠 토의·토론 활동 중 '{keywords}' 주제를 중심으로 탐색하며, {kw1_eul} 바탕으로 날카로운 분석력과 비판적 안목을 발휘함. 또한 모둠원들과의 의견 조율 과정에서 {kw2_wa} 상호작용을 이끌어 논의의 깊이를 더하는 데 크게 기여함.",
+      "교과 심화 탐구 과정에서 '{keywords}'에 주목하여, {kw1_ro} 관련 배경지식과 사회적 가치를 입체적으로 조명함. 과제 수행 과정에서 드러난 {kw2_ui} 태도는 교사와 또래 학습자들에게도 깊은 인상을 줌."
     ],
     outcomes: [
-      "이처럼 배움에 대한 뚜렷한 목표 의식과 실천력을 겸비하고 있어, 앞으로도 학업적 성취를 꾸준히 높이고 폭넓은 역량을 발휘할 잠재력이 기대됨.",
-      "배운 내용을 자기화하여 실제 문제에 적용하는 능력이 탁월하며, 끊임없이 스스로의 한계를 극복하려는 태도를 지녀 향후 발전 가능성이 매우 큼.",
-      "학습에 대한 끈기와 분석적 사고력을 바탕으로 주어진 과제를 끝까지 완수해내는 역량이 뛰어나며, 교과 전반에서 지속적인 지적 성장이 기대되는 학생임."
+      "이처럼 텍스트를 비판적으로 수용하고 논리적으로 재구성하는 역량이 탁월하며, 배움을 일상의 삶과 연결 지어 성찰할 줄 아는 성숙한 태도를 지녀 향후 발전 가능성이 매우 큼.",
+      "풍부한 어휘력과 균형 잡힌 시각을 바탕으로 자신의 생각을 설득력 있게 표현하는 역량이 우수하며, 인문사회 전반에서 지속적인 지적 성장이 기대되는 학생임.",
+      "지적 호기심과 논리적 분석력을 두루 갖추고 있어 주어진 과제를 깊이 있게 완수해내며, 교과에 대한 깊은 이해를 바탕으로 폭넓은 학문적 성취를 이룰 잠재력이 돋보임."
     ]
   },
   behavior: {
@@ -995,28 +996,28 @@ function loadSample(type) {
     document.getElementById("studentId").value = "10315";
     document.getElementById("studentName").value = "김민수";
     document.getElementById("recordType").value = "subject";
-    document.getElementById("subjectName").value = "수학";
-    document.getElementById("keywords").value = "이차함수 실생활 적용 탐구, 수학적 문제해결력, 적극적인 질문 태도, 또래 멘토링 활동";
+    document.getElementById("subjectName").value = "국어";
+    document.getElementById("keywords").value = "문학적 비평 능력, 논리적 사고 능력, 현대 소설 갈등 구조 분석, 비판적 읽기 역량, 토론 활동 주도";
     document.getElementById("writingStyle").value = "balanced";
   } else if (type === 2) {
     document.getElementById("studentId").value = "20108";
     document.getElementById("studentName").value = "이서연";
     document.getElementById("recordType").value = "subject";
-    document.getElementById("subjectName").value = "통합과학";
-    document.getElementById("keywords").value = "신소재 탐구 보고서, 그래핀의 물리적 특성 분석, 실험 데이터 오차 분석, 가설 검증 역량";
+    document.getElementById("subjectName").value = "통합사회";
+    document.getElementById("keywords").value = "사회적 불평등 쟁점 분석, 다문화 사회와 시민의식 고찰, 논리적 논증과 대안 제시, 통계 자료 비판적 해석";
     document.getElementById("writingStyle").value = "academic";
   } else if (type === 3) {
     document.getElementById("studentId").value = "10521";
     document.getElementById("studentName").value = "박도현";
     document.getElementById("recordType").value = "behavior";
-    document.getElementById("keywords").value = "학급 1인 1역할 성실 수행, 또래 상담 및 경청, 급우 간 갈등 중재, 밝고 긍정적인 분위기 조성";
+    document.getElementById("keywords").value = "학급 1인 1역할 성실 수행, 공감과 경청의 대화법, 급우 간 갈등 중재, 따뜻한 배려심";
     document.getElementById("writingStyle").value = "personality";
   } else if (type === 4) {
     document.getElementById("studentId").value = "20412";
     document.getElementById("studentName").value = "최유진";
     document.getElementById("recordType").value = "club";
-    document.getElementById("subjectName").value = "과학탐구동아리";
-    document.getElementById("keywords").value = "적정기술 정수 장치 설계, 프로젝트 기획 주도, 부원 간 협업 촉진, 성과 발표회 발표자";
+    document.getElementById("subjectName").value = "독서토론동아리";
+    document.getElementById("keywords").value = "시사 쟁점 찬반 토론 기획, 입론서 작성 및 논리적 반박, 비판적 미디어 리터러시, 문집 제작 주도";
     document.getElementById("writingStyle").value = "creative";
   }
   updateKeywordSuggestions();
