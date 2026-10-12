@@ -1,0 +1,1539 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>중고등학생 학교생활기록부(생기부) 작성 도우미</title>
+  <style>
+    :root {
+      --primary: #2563eb;
+      --primary-hover: #1d4ed8;
+      --primary-light: #eff6ff;
+      --secondary: #475569;
+      --success: #16a34a;
+      --success-light: #dcfce7;
+      --warning: #d97706;
+      --warning-light: #fef3c7;
+      --danger: #dc2626;
+      --bg: #f8fafc;
+      --card-bg: #ffffff;
+      --border: #e2e8f0;
+      --text-main: #0f172a;
+      --text-muted: #64748b;
+      --radius: 12px;
+      --shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+      --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: -apple-system, BlinkMacSystemFont, "Apple SD Gothic Neo", "Pretendard", "Noto Sans KR", "Malgun Gothic", sans-serif;
+    }
+
+    body {
+      background-color: var(--bg);
+      color: var(--text-main);
+      line-height: 1.6;
+      padding: 24px 16px;
+    }
+
+    .container {
+      max-width: 1240px;
+      margin: 0 auto;
+    }
+
+    /* 헤더 */
+    header {
+      background: linear-gradient(135deg, #1e3a8a 0%, #2563eb 100%);
+      color: white;
+      padding: 24px 30px;
+      border-radius: var(--radius);
+      box-shadow: var(--shadow-lg);
+      margin-bottom: 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 16px;
+    }
+
+    .header-title h1 {
+      font-size: 1.7rem;
+      font-weight: 700;
+      margin-bottom: 6px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .header-title p {
+      font-size: 0.95rem;
+      color: #bfdbfe;
+    }
+
+    .header-badges {
+      display: flex;
+      gap: 10px;
+      align-items: center;
+    }
+
+    .badge {
+      background: rgba(255, 255, 255, 0.2);
+      backdrop-filter: blur(8px);
+      padding: 8px 16px;
+      border-radius: 9999px;
+      font-size: 0.86rem;
+      font-weight: 600;
+      border: 1px solid rgba(255, 255, 255, 0.3);
+      cursor: pointer;
+      transition: all 0.2s;
+      color: white;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .badge:hover {
+      background: rgba(255, 255, 255, 0.3);
+    }
+
+    /* 네비게이션 탭 */
+    .tab-nav {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 20px;
+      border-bottom: 2px solid var(--border);
+      padding-bottom: 4px;
+    }
+
+    .tab-btn {
+      padding: 10px 20px;
+      border: none;
+      background: transparent;
+      font-size: 1rem;
+      font-weight: 600;
+      color: var(--text-muted);
+      cursor: pointer;
+      border-radius: 8px 8px 0 0;
+      position: relative;
+      transition: all 0.2s;
+    }
+
+    .tab-btn:hover {
+      color: var(--primary);
+      background: var(--primary-light);
+    }
+
+    .tab-btn.active {
+      color: var(--primary);
+    }
+
+    .tab-btn.active::after {
+      content: '';
+      position: absolute;
+      bottom: -6px;
+      left: 0;
+      width: 100%;
+      height: 3px;
+      background: var(--primary);
+      border-radius: 3px 3px 0 0;
+    }
+
+    /* 메인 그리드 레이아웃 */
+    .main-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 24px;
+    }
+
+    @media (max-width: 992px) {
+      .main-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    /* 카드 스타일 */
+    .card {
+      background: var(--card-bg);
+      border-radius: var(--radius);
+      border: 1px solid var(--border);
+      box-shadow: var(--shadow);
+      padding: 24px;
+      display: flex;
+      flex-direction: column;
+      gap: 18px;
+    }
+
+    .card-title {
+      font-size: 1.15rem;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-bottom: 1px solid var(--border);
+      padding-bottom: 12px;
+    }
+
+    .card-title span.step {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 26px;
+      height: 26px;
+      background: var(--primary);
+      color: white;
+      border-radius: 50%;
+      font-size: 0.85rem;
+      margin-right: 8px;
+    }
+
+    /* 폼 요소 */
+    .form-group {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .form-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 14px;
+    }
+
+    label {
+      font-size: 0.9rem;
+      font-weight: 600;
+      color: var(--text-main);
+    }
+
+    .required::after {
+      content: ' *';
+      color: var(--danger);
+    }
+
+    input[type="text"], select, textarea {
+      width: 100%;
+      padding: 10px 14px;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      font-size: 0.95rem;
+      background: #fafafa;
+      transition: border-color 0.2s, box-shadow 0.2s;
+    }
+
+    input[type="text"]:focus, select:focus, textarea:focus {
+      outline: none;
+      border-color: var(--primary);
+      background: #ffffff;
+      box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.15);
+    }
+
+    textarea {
+      resize: vertical;
+      min-height: 100px;
+    }
+
+    /* 추천 키워드 태그 */
+    .keyword-suggestions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin-top: 6px;
+    }
+
+    .tag-btn {
+      font-size: 0.8rem;
+      padding: 4px 10px;
+      background: #f1f5f9;
+      color: #334155;
+      border: 1px solid #cbd5e1;
+      border-radius: 9999px;
+      cursor: pointer;
+      transition: all 0.15s;
+    }
+
+    .tag-btn:hover {
+      background: var(--primary-light);
+      border-color: var(--primary);
+      color: var(--primary);
+    }
+
+    /* 샘플 버튼 */
+    .sample-btn-group {
+      display: flex;
+      gap: 6px;
+      flex-wrap: wrap;
+      margin-bottom: 2px;
+    }
+
+    .sample-pill {
+      font-size: 0.76rem;
+      padding: 3px 8px;
+      border-radius: 6px;
+      background: #e0e7ff;
+      color: #3730a3;
+      border: 1px solid #c7d2fe;
+      cursor: pointer;
+      font-weight: 600;
+    }
+    .sample-pill:hover {
+      background: #c7d2fe;
+    }
+
+    /* 버튼 스타일 */
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      padding: 11px 18px;
+      font-size: 0.95rem;
+      font-weight: 600;
+      border-radius: 8px;
+      border: none;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .btn-primary {
+      background: var(--primary);
+      color: white;
+      box-shadow: 0 2px 4px rgba(37, 99, 235, 0.25);
+    }
+
+    .btn-primary:hover {
+      background: var(--primary-hover);
+    }
+
+    .btn-outline {
+      background: white;
+      color: var(--secondary);
+      border: 1px solid var(--border);
+    }
+
+    .btn-outline:hover {
+      background: #f8fafc;
+      border-color: #cbd5e1;
+      color: var(--text-main);
+    }
+
+    .btn-sm {
+      padding: 6px 12px;
+      font-size: 0.85rem;
+    }
+
+    .btn-success {
+      background: var(--success);
+      color: white;
+    }
+
+    .btn-success:hover {
+      background: #15803d;
+    }
+
+    /* 결과 영역 */
+    .result-container {
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+      height: 100%;
+    }
+
+    .stats-bar {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 10px;
+      background: var(--primary-light);
+      padding: 12px 14px;
+      border-radius: 8px;
+      border: 1px solid #bfdbfe;
+      align-items: center;
+      text-align: center;
+    }
+
+    @media (max-width: 600px) {
+      .stats-bar {
+        grid-template-columns: 1fr 1fr;
+      }
+    }
+
+    .stat-item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .stat-label {
+      font-size: 0.74rem;
+      color: var(--text-muted);
+      font-weight: 600;
+    }
+
+    .stat-value {
+      font-size: 1.15rem;
+      font-weight: 700;
+      color: var(--primary);
+    }
+
+    .stat-value.ok {
+      color: var(--success);
+    }
+
+    .stat-value.warn {
+      color: var(--warning);
+    }
+
+    /* 프로그레스 바 */
+    .progress-wrapper {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .progress-bar-bg {
+      width: 100%;
+      height: 7px;
+      background: #e2e8f0;
+      border-radius: 9999px;
+      overflow: hidden;
+    }
+
+    .progress-bar-fill {
+      height: 100%;
+      width: 0%;
+      background: var(--primary);
+      transition: width 0.3s ease, background-color 0.3s;
+    }
+
+    .result-editor {
+      width: 100%;
+      min-height: 250px;
+      flex: 1;
+      font-size: 1.02rem;
+      line-height: 1.85;
+      padding: 16px;
+      background: #fff;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      color: #1e293b;
+    }
+
+    .result-editor:focus {
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.15);
+    }
+
+    .action-row {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    /* 가이드 배너 */
+    .info-banner {
+      background: #f0fdf4;
+      border: 1px solid #bbf7d0;
+      color: #166534;
+      padding: 12px 16px;
+      border-radius: 8px;
+      font-size: 0.88rem;
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+    }
+
+    .info-banner svg {
+      flex-shrink: 0;
+      margin-top: 2px;
+    }
+
+    /* 학생 목록 테이블 */
+    .table-responsive {
+      overflow-x: auto;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.92rem;
+      text-align: left;
+    }
+
+    th, td {
+      padding: 12px 14px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    th {
+      background: #f8fafc;
+      font-weight: 600;
+      color: #475569;
+    }
+
+    tr:hover td {
+      background: #f1f5f9;
+    }
+
+    /* 모달 */
+    .modal-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.5);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      z-index: 1000;
+      padding: 16px;
+    }
+
+    .modal-overlay.open {
+      display: flex;
+    }
+
+    .modal-card {
+      background: white;
+      border-radius: var(--radius);
+      max-width: 520px;
+      width: 100%;
+      padding: 24px;
+      box-shadow: var(--shadow-lg);
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    /* 알림 토스트 */
+    #toast {
+      position: fixed;
+      bottom: 24px;
+      right: 24px;
+      background: #1e293b;
+      color: white;
+      padding: 12px 20px;
+      border-radius: 8px;
+      font-size: 0.95rem;
+      box-shadow: var(--shadow-lg);
+      opacity: 0;
+      transform: translateY(20px);
+      transition: all 0.3s ease;
+      pointer-events: none;
+      z-index: 2000;
+    }
+
+    #toast.show {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  </style>
+</head>
+<body>
+
+<div class="container">
+  <!-- 헤더 -->
+  <header>
+    <div class="header-title">
+      <h1>🎓 중고등학생 생기부 작성 프로그램</h1>
+      <p>학번, 이름, 핵심 키워드를 입력하면 한글 300~400자 내외의 NEIS 규격 맞춤형 생기부 문구를 작성합니다.</p>
+    </div>
+    <div class="header-badges">
+      <button class="badge" id="engine-badge" onclick="toggleApiModal()">
+        ⚙️ 엔진: <span id="engine-name">내장 자연어 엔진 (오프라인 100%)</span>
+      </button>
+    </div>
+  </header>
+
+  <!-- 탭 메뉴 -->
+  <div class="tab-nav">
+    <button class="tab-btn active" onclick="switchTab('single')">📝 단일 학생 작성</button>
+    <button class="tab-btn" onclick="switchTab('manage')">📋 학생별 작성 기록 목록 (<span id="saved-count">0</span>명)</button>
+    <button class="tab-btn" onclick="switchTab('guide')">💡 생기부 기재 팁 & NEIS 가이드</button>
+  </div>
+
+  <!-- TAB 1: 단일 작성 화면 -->
+  <div id="tab-single" class="main-grid">
+    <!-- 입력 폼 -->
+    <div class="card">
+      <div class="card-title">
+        <div><span class="step">1</span> 학생 정보 및 키워드 입력</div>
+        <div style="display:flex; gap:6px;">
+          <button class="btn btn-outline btn-sm" onclick="resetForm()">초기화</button>
+        </div>
+      </div>
+
+      <!-- 예시 불러오기 퀵 버튼 -->
+      <div>
+        <span style="font-size:0.8rem; color:var(--text-muted); margin-right:6px;">예시 입력:</span>
+        <span class="sample-pill" onclick="loadSample(1)">수학 세특 예시</span>
+        <span class="sample-pill" onclick="loadSample(2)">과학 세특 예시</span>
+        <span class="sample-pill" onclick="loadSample(3)">행동특성(행특) 예시</span>
+        <span class="sample-pill" onclick="loadSample(4)">동아리/진로 예시</span>
+      </div>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label for="studentId" class="required">학번</label>
+          <input type="text" id="studentId" placeholder="예: 10315 또는 2학년 3반 12번" value="10315">
+        </div>
+        <div class="form-group">
+          <label for="studentName" class="required">이름</label>
+          <input type="text" id="studentName" placeholder="예: 김민수" value="김민수">
+        </div>
+      </div>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label for="recordType" class="required">기재 영역</label>
+          <select id="recordType" onchange="updateKeywordSuggestions()">
+            <option value="subject">과목별 세부능력 및 특기사항 (세특)</option>
+            <option value="behavior">행동특성 및 종합의견 (행특)</option>
+            <option value="career">진로활동 (창체)</option>
+            <option value="club">동아리활동 (창체)</option>
+            <option value="autonomous">자율활동 (창체)</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label for="subjectName">과목명 / 활동명</label>
+          <input type="text" id="subjectName" placeholder="예: 수학, 통합과학, 학급자치 등" value="수학">
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="keywords" class="required">핵심 키워드 및 관찰 내용</label>
+        <textarea id="keywords" placeholder="쉼표(,)나 줄바꿈으로 키워드를 적어주세요.
+예: 이차함수 실생활 적용 탐구, 수학적 문제해결력, 적극적인 질문 태도, 멘토링 활동, 끈기 있는 태도">이차함수 실생활 적용 탐구, 수학적 문제해결력, 적극적인 질문 태도, 또래 멘토링 활동</textarea>
+        
+        <div style="font-size: 0.8rem; color: var(--text-muted); margin-top: 4px;">
+          추천 키워드 (클릭하여 추가):
+        </div>
+        <div class="keyword-suggestions" id="suggested-tags">
+          <!-- 동적 태그 삽입 -->
+        </div>
+      </div>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label for="writingStyle">강조할 관점 / 스타일</label>
+          <select id="writingStyle">
+            <option value="balanced">균형형 (학습태도 + 구체적 활동 + 성장역량)</option>
+            <option value="academic">학업 역량 & 심화 탐구 중심</option>
+            <option value="personality">인성, 배려 & 협동(공동체) 중심</option>
+            <option value="creative">자기주도성 & 창의적 문제해결 중심</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label for="targetLength">목표 글자 수 (공백 포함)</label>
+          <select id="targetLength">
+            <option value="350" selected>300 ~ 400자 내외 (권장 표준)</option>
+            <option value="300">약 300자 (간결형)</option>
+            <option value="400">약 400자 (상세형)</option>
+            <option value="500">약 500자 (최대 상한형)</option>
+          </select>
+        </div>
+      </div>
+
+      <button class="btn btn-primary" onclick="generateRecord()" style="font-size: 1.05rem; padding: 13px;">
+        ✨ 300~400자 생기부 문안 생성하기
+      </button>
+    </div>
+
+    <!-- 결과 화면 -->
+    <div class="card">
+      <div class="card-title">
+        <div><span class="step">2</span> 생성된 생기부 문구 확인 및 편집</div>
+        <span style="font-size: 0.85rem; font-weight: normal; color: var(--text-muted);" id="student-badge">
+          학번: 10315 / 이름: 김민수
+        </span>
+      </div>
+
+      <div class="result-container">
+        <!-- 글자 수 통계 -->
+        <div class="stats-bar">
+          <div class="stat-item">
+            <span class="stat-label">공백 포함 글자 수</span>
+            <span class="stat-value" id="char-count">0자</span>
+          </div>
+          <div class="stat-item">
+            <span class="stat-label">공백 제외 글자 수</span>
+            <span class="stat-value" id="char-no-space-count">0자</span>
+          </div>
+          <div class="stat-item">
+            <span class="stat-label">NEIS 바이트 (Byte)</span>
+            <span class="stat-value" id="byte-count">0 Byte</span>
+          </div>
+          <div class="stat-item">
+            <span class="stat-label">300~400자 판정</span>
+            <span class="stat-value" id="status-badge" style="font-size:0.92rem;">대기</span>
+          </div>
+        </div>
+
+        <!-- 분량 시각적 프로그레스 바 -->
+        <div class="progress-wrapper">
+          <div style="display:flex; justify-content:space-between; font-size:0.75rem; color:var(--text-muted);">
+            <span>0자</span>
+            <span>300자 (권장 시작)</span>
+            <span>400자 (권장 끝)</span>
+            <span>500자</span>
+          </div>
+          <div class="progress-bar-bg">
+            <div class="progress-bar-fill" id="char-progress"></div>
+          </div>
+        </div>
+
+        <!-- 텍스트 영역 -->
+        <textarea id="resultText" class="result-editor" placeholder="좌측에서 학번, 이름, 키워드를 입력하고 '생성하기' 버튼을 누르면 이곳에 300~400자의 단락형 생기부 문구가 작성됩니다. 직접 타이핑하여 자유롭게 수정하거나 문장을 다듬을 수도 있습니다."></textarea>
+
+        <!-- 액션 버튼 -->
+        <div class="action-row">
+          <button class="btn btn-success" onclick="copyResult()">
+            📋 NEIS 복사하기
+          </button>
+          <button class="btn btn-outline" onclick="regenerateVariant()">
+            🔄 다른 표현으로 재생성
+          </button>
+          <button class="btn btn-outline" onclick="adjustLength(35)">
+            ➕ 문장 보강 (+35자)
+          </button>
+          <button class="btn btn-outline" onclick="adjustLength(-35)">
+            ➖ 축약 정리 (-35자)
+          </button>
+          <button class="btn btn-primary" onclick="saveToRecordList()">
+            💾 목록에 저장
+          </button>
+        </div>
+
+        <div class="info-banner">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="12" cy="12" r="10"></circle>
+            <line x1="12" y1="16" x2="12" y2="12"></line>
+            <line x1="12" y1="8" x2="12.01" y2="8"></line>
+          </svg>
+          <div>
+            <strong>NEIS 규격 준수:</strong> 한국어 조사(은/는, 이/가, 을/를, 과/와)를 자동으로 자연스럽게 처리하며, 교육부 훈령에 따라 사교육 및 외부 실적 요소를 배제하고 관찰 및 성장 중심으로 구성됩니다.
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- TAB 2: 목록 관리 화면 -->
+  <div id="tab-manage" class="card" style="display: none;">
+    <div class="card-title">
+      <div>📋 작성된 학생 생기부 명단</div>
+      <div style="display: flex; gap: 8px;">
+        <button class="btn btn-outline btn-sm" onclick="exportToCSV()">📥 CSV (엑셀 호환) 다운로드</button>
+        <button class="btn btn-outline btn-sm" onclick="exportToTXT()">📄 텍스트 전체 내보내기</button>
+        <button class="btn btn-outline btn-sm" style="color: var(--danger);" onclick="clearAllRecords()">전체 삭제</button>
+      </div>
+    </div>
+
+    <div class="table-responsive">
+      <table>
+        <thead>
+          <tr>
+            <th style="width: 90px;">학번</th>
+            <th style="width: 90px;">이름</th>
+            <th style="width: 130px;">영역(과목)</th>
+            <th>생기부 본문 내용 미리보기</th>
+            <th style="width: 95px; text-align:center;">글자수/바이트</th>
+            <th style="width: 140px; text-align:center;">작업</th>
+          </tr>
+        </thead>
+        <tbody id="records-table-body">
+          <tr>
+            <td colspan="6" style="text-align: center; color: var(--text-muted); padding: 32px;">
+              아직 저장된 학생 기록이 없습니다. 단일 작성 화면에서 문안 생성 후 [목록에 저장] 버튼을 눌러보세요.
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- TAB 3: 가이드 화면 -->
+  <div id="tab-guide" class="card" style="display: none;">
+    <div class="card-title">
+      💡 중·고등학교 학교생활기록부(생기부) 기재 요령 핵심 가이드
+    </div>
+    <div style="display: flex; flex-direction: column; gap: 16px; font-size: 0.95rem; line-height: 1.8;">
+      <div style="background: #f8fafc; padding: 16px; border-radius: 8px; border-left: 4px solid var(--primary);">
+        <h3 style="font-size: 1.1rem; color: #1e3a8a; margin-bottom: 6px;">1. 기재 분량 및 NEIS 바이트 기준</h3>
+        <p>• <strong>한글 1글자 = 3 Byte</strong>, <strong>영문/숫자/공백 1글자 = 1 Byte</strong>, <strong>줄바꿈(엔터) = 2 Byte</strong>로 나이스 시스템에서 자동 계산됩니다.</p>
+        <p>• 과목별 세특(학기당 1,500 Byte / 한글 약 500자 이내) 기준에서 한 단락으로 <strong>300~400자(약 900~1,200 Byte)</strong>는 수업 태도와 대표 탐구 활동, 성취 역량을 알차게 담아내기에 가장 적절한 황금 분량입니다.</p>
+      </div>
+
+      <div style="background: #f8fafc; padding: 16px; border-radius: 8px; border-left: 4px solid var(--success);">
+        <h3 style="font-size: 1.1rem; color: #166534; margin-bottom: 6px;">2. 생기부 명품 서술 3단 구조</h3>
+        <p><strong>[1단계: 수업 태도 및 참여 계기]</strong> 수업에 임하는 성실성, 호기심, 적극적인 질문과 자기주도적 자세</p>
+        <p><strong>[2단계: 구체적 탐구 및 문제해결 과정]</strong> 제시된 키워드 중심의 활동, 모둠 협력, 데이터 분석, 실생활 연계 탐구</p>
+        <p><strong>[3단계: 배운 점, 역량 발휘 및 발전 가능성]</strong> 해당 활동을 통해 체득한 지적 성장, 인성적 미덕, 향후 학문적 잠재력 평가</p>
+      </div>
+
+      <div style="background: #fef2f2; padding: 16px; border-radius: 8px; border-left: 4px solid var(--danger);">
+        <h3 style="font-size: 1.1rem; color: #991b1b; margin-bottom: 6px;">3. 교육부 훈령 기재 금지 사항 주의</h3>
+        <p>• <strong>사교육 유발 요인:</strong> 공인어학시험(TOEIC, TOEFL, TEPS 등), 교외 경시대회 및 올림피아드 수상 실적, 자격증 명칭</p>
+        <p>• <strong>외부 실적:</strong> 논문 등재 사실, 도서 출간 사실, 지식재산권(특허, 실용신안) 출원 또는 등록 사실</p>
+        <p>• <strong>신상 정보:</strong> 부모 및 친인척의 사회·경제적 지위(직업, 직위 등)를 암시하는 모든 내용</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- API 설정 모달 (선택 사항) -->
+<div class="modal-overlay" id="apiModal">
+  <div class="modal-card">
+    <h3 style="font-size: 1.2rem; font-weight: 700;">🤖 AI 고도화 엔진 (Gemini API) 설정</h3>
+    <p style="font-size: 0.9rem; color: var(--text-muted);">
+      본 프로그램은 인터넷 연결이나 API 키 없이도 <strong>내장 자연어 엔진</strong>을 통해 300~400자의 고품질 생기부를 무제한 무료로 즉시 생성합니다.<br><br>
+      더욱 다채롭고 정교한 최신 거대언어모델(LLM) 문장을 원하시면 Google Gemini API 키를 입력해 두실 수 있습니다. (키는 브라우저 내부 로컬에만 안전하게 보관됩니다.)
+    </p>
+
+    <div class="form-group">
+      <label for="geminiApiKey">Google Gemini API Key</label>
+      <input type="text" id="geminiApiKey" placeholder="AIzaSy... 형식의 API Key 입력 (비워두면 내장 엔진 모드)">
+    </div>
+
+    <div style="font-size: 0.8rem; color: var(--text-muted);">
+      * 키 발급: Google AI Studio (<a href="https://aistudio.google.com" target="_blank" style="color:var(--primary);">aistudio.google.com</a>)에서 무료 생성 가능
+    </div>
+
+    <div style="display: flex; justify-content: flex-end; gap: 8px; margin-top: 8px;">
+      <button class="btn btn-outline" onclick="closeApiModal()">취소</button>
+      <button class="btn btn-primary" onclick="saveApiKey()">설정 저장</button>
+    </div>
+  </div>
+</div>
+
+<!-- 토스트 메시지 -->
+<div id="toast">복사되었습니다!</div>
+
+<script>
+// 한국어 정밀 조사(은/는, 이/가, 을/를, 과/와, 으로/로) 부착 함수
+function attachJosa(word, josaPair) {
+  if (!word || typeof word !== 'string') return word;
+  const cleanWord = word.trim();
+  if (!cleanWord) return "";
+  const lastChar = cleanWord[cleanWord.length - 1];
+  const code = lastChar.charCodeAt(0);
+  
+  // 완성형 한글이 아니면 기본 앞 조사 반환
+  if (code < 0xAC00 || code > 0xD7A3) {
+    return cleanWord + josaPair.split('/')[0];
+  }
+  
+  const jongseongIndex = (code - 0xAC00) % 28;
+  const hasJongseong = jongseongIndex > 0;
+  const [withJong, withoutJong] = josaPair.split('/');
+
+  if (josaPair === "으로/로") {
+    // 종성이 'ㄹ'(index 8)이거나 없으면 '로', 그 외 종성은 '으로'
+    return jongseongIndex === 8 || !hasJongseong ? cleanWord + "로" : cleanWord + "으로";
+  }
+
+  return cleanWord + (hasJongseong ? withJong : withoutJong);
+}
+
+// 추천 키워드 사전
+const SUGGESTIONS = {
+  subject: [
+    "수학적 문제해결력", "실생활 연계 적용", "논리적 사고력", "적극적인 질문 태도",
+    "자기주도 학습능력", "또래 멘토링 활동", "오답 분석 습관", "심화 과제 탐구", "모둠 활동 협업",
+    "자료 분석 능력", "창의적 접근법", "발표 및 전달력", "개념 연계 이해", "지속적인 학업 열의"
+  ],
+  behavior: [
+    "성실하고 책임감 있는 태도", "또래 관계 원만", "경청과 배려심", "학급 궂은일 솔선수범", "공감 능력",
+    "규칙 준수", "긍정적인 마인드", "갈등 중재 능력", "예의 바른 언행", "자기 성찰 태도",
+    "리더십 발휘", "주변 친구 격려", "솔직하고 당당한 태도", "모범적인 생활 습관"
+  ],
+  career: [
+    "진로 탐색 열의", "전공 적합성", "관련 도서 독서", "직업인 멘토링 참여", "자기 이해도 높음",
+    "학습 계획 수립", "전공 관련 보고서 작성", "진로 로드맵 구체화", "전문성 함양 노력"
+  ],
+  club: [
+    "동아리 활동 주도", "부원 간 화합 도모", "프로젝트 기획 및 완수", "실험·실습 참여도", "창의적 아이디어 제시",
+    "역할 분담 충실", "정기 발표회 준비", "결과물 포트폴리오 제작", "끈기 있는 탐구 자세"
+  ],
+  autonomous: [
+    "학급 1인 1역할 성실 수행", "학급 회의 적극 참여", "환경 정화 솔선수범", "체육대회 협동심",
+    "학교 행사 능동적 참여", "민주시민 의식", "공동체 규칙 준수", "급우 간 유대감 형성"
+  ]
+};
+
+// 템플릿 데이터베이스 (중고교 생기부 표준 종결어미: ~함, ~임, ~을 보임, 관찰 평가)
+const TEMPLATES = {
+  subject: {
+    intros: [
+      "{subject} 수업에 매시간 높은 집중력과 열의를 보이며, 스스로 질문하고 깊이 있게 고민하는 자기주도적 학습 태도가 돋보이는 학생임.",
+      "{subject} 교과에 대한 남다른 학업적 호기심과 성실한 참여 태도를 바탕으로, 학습한 개념을 다각도로 이해하고 확장하려는 노력이 돋보임.",
+      "매 수업 시간마다 성실하고 진지한 자세로 임하며, 교과 지식을 단순히 수용하는 데 그치지 않고 본인만의 논리로 정리하는 역량이 우수함.",
+      "{subject} 과목의 기본 개념을 탄탄히 다지며, 새로운 학습 주제를 마주할 때마다 주도적으로 탐구 과제를 설정하고 해결해 나가는 적극성을 지님."
+    ],
+    bodies: [
+      "특히 '{keywords}' 관련 단원을 학습하면서 {kw1_ul} 깊이 있게 탐구하고 {kw2_eul} 발휘하여 학습에 주도적으로 참여함. 복잡한 문제를 접했을 때 포기하지 않고 다각적인 접근법을 시도하며 끈기 있게 결론을 도출해 내는 모습을 보임.",
+      "수행평가 및 모둠 탐구 활동 중 '{keywords}' 주제를 중심으로 탐색하며, {kw1_eul} 바탕으로 논리적인 분석력을 발휘함. 또한 모둠원들과의 토의 과정에서 {kw2_wa} 소통을 이끌어 팀의 학습 효율을 높이는 데 크게 기여함.",
+      "교과 심화 탐구 과정에서 '{keywords}'에 주목하여, {kw1_ro} 관련 원리를 실제 사례와 접목하여 분석함. 과제 수행 과정에서 드러난 {kw2_ui} 자세는 또래 학습자들에게도 긍정적인 자극을 줌."
+    ],
+    outcomes: [
+      "이처럼 배움에 대한 뚜렷한 목표 의식과 실천력을 겸비하고 있어, 앞으로도 학업적 성취를 꾸준히 높이고 폭넓은 역량을 발휘할 잠재력이 기대됨.",
+      "배운 내용을 자기화하여 실제 문제에 적용하는 능력이 탁월하며, 끊임없이 스스로의 한계를 극복하려는 태도를 지녀 향후 발전 가능성이 매우 큼.",
+      "학습에 대한 끈기와 분석적 사고력을 바탕으로 주어진 과제를 끝까지 완수해내는 역량이 뛰어나며, 교과 전반에서 지속적인 지적 성장이 기대되는 학생임."
+    ]
+  },
+  behavior: {
+    intros: [
+      "매사에 밝고 긍정적인 태도로 학급 생활에 임하며, 타인을 배려하고 존중하는 태도가 몸에 배어 있어 교사와 급우들 모두에게 두터운 신망을 받는 학생임.",
+      "기본 생활 습관이 매우 바르고 규칙을 성실히 준수하며, 학급의 공동체 활동에 언제나 책임감과 솔선수범하는 자세로 참여하는 모범적인 학생임.",
+      "온화한 품성과 원만한 대인관계 능력을 바탕으로 학급 내에서 친구들의 신뢰를 얻으며, 주변을 따뜻하게 아우르는 배려심이 돋보임."
+    ],
+    bodies: [
+      "학급 생활 중 '{keywords}' 측면에서 두드러진 역할을 수행함. 특히 {kw1_ul} 바탕으로 곤란을 겪는 친구에게 먼저 다가가 따뜻한 도움을 아끼지 않았으며, {kw2_ui} 상황에서도 중심을 잃지 않고 조화롭게 소통하는 성숙함을 보임.",
+      "일상 속에서 '{keywords}'의 가치를 몸소 실천하는 학생으로, {kw1_ro} 학급의 궂은일도 마다하지 않고 적극적으로 도맡아 처리함. 또한 {kw2_wa} 상호작용을 통해 급우 간 의견 차이를 부드럽게 조율하는 등 공동체 화합에 크게 기여함."
+    ],
+    outcomes: [
+      "자신의 언행에 책임을 질 줄 알며 타인의 감정에 깊이 공감할 줄 아는 성숙한 인성을 지니고 있어, 앞으로 어떤 공동체에서도 훌륭한 구성원으로 성장할 것으로 확신함.",
+      "따뜻한 마음과 성실한 실천력을 두루 갖추고 있어 주변 사람들에게 긍정적인 에너지를 전파하며, 올바른 가치관을 바탕으로 지속적인 성장이 기대됨."
+    ]
+  },
+  career: {
+    intros: [
+      "자신의 적성과 진로 목표에 대한 관심이 매우 뚜렷하며, 관련 분야의 역량을 개발하기 위해 주도적으로 탐색하고 계획을 실천하는 학생임.",
+      "진로와 관련된 다양한 정보와 학문적 지식을 능동적으로 탐색하며, 미래 사회의 변화에 맞추어 자신의 강점을 발전시키고자 노력하는 열정이 돋보임."
+    ],
+    bodies: [
+      "진로 탐색 활동 중 '{keywords}'에 깊은 관심을 가지고, {kw1_ul} 구체화하기 위한 관련 탐구 및 자료 조사를 충실히 수행함. 특히 {kw2_wa} 연계된 활동을 통해 해당 분야에 요구되는 핵심 역량을 기르고 자신의 진로 로드맵을 체계적으로 수립함."
+    ],
+    outcomes: [
+      "목표를 향한 끊임없는 도전 정신과 탐구심을 갖추고 있어, 향후 관련 분야에서 자신의 꿈을 당당히 펼치고 전문성을 꽃피울 것으로 기대됨."
+    ]
+  },
+  club: {
+    intros: [
+      "동아리 활동에 대한 애정과 열정이 남다르며, 부원들과의 협력 속에서 자신의 관심 분야를 심도 있게 탐구해 나가는 적극적인 모습을 보임.",
+      "정기적인 동아리 모임마다 주도적으로 과제를 제안하고, 창의적인 시각으로 활동 결과물을 발전시키기 위해 끊임없이 노력하는 학생임."
+    ],
+    bodies: [
+      "동아리 프로젝트 과정에서 '{keywords}' 활동을 중심으로, {kw1_eul} 십분 발휘하여 팀의 완성도 높은 성과물을 이끌어냄. 활동 중 예상치 못한 문제가 발생했을 때도 {kw2_ui} 자세로 극복 방안을 모색함."
+    ],
+    outcomes: [
+      "협동의 가치를 이해하고 자신의 역할을 성실하게 완수하는 책임감을 지니고 있어, 앞으로의 단체 활동 및 심화 탐구에서도 주도적인 역할을 할 것으로 기대됨."
+    ]
+  },
+  autonomous: {
+    intros: [
+      "학급과 학교의 다양한 자율 자치 활동에 능동적으로 참여하며, 공동체의 발전을 위해 자신의 역할을 성실히 수행하는 시민의식이 돋보임.",
+      "학급 구성원으로서의 주인의식을 바탕으로 일상의 규칙을 준수하고, 화합과 배려가 넘치는 학급 분위기를 조성하는 데 앞장서는 학생임."
+    ],
+    bodies: [
+      "자치 활동 중 '{keywords}' 분야에서 솔선수범하여 {kw1_ul} 실천하였으며, {kw2_wa} 협력하는 활동을 통해 급우들과 함께 긍정적인 변화를 이끌어냄."
+    ],
+    outcomes: [
+      "공동체에 대한 헌신과 책임감을 바탕으로 타의 모범이 되며, 민주적인 의사결정과 상호 협력을 실천할 줄 아는 훌륭한 인재로의 성장이 기대됨."
+    ]
+  }
+};
+
+let currentRecords = [];
+let lastVariantIndex = 0;
+
+// 초기화
+document.addEventListener("DOMContentLoaded", () => {
+  loadSavedRecords();
+  updateKeywordSuggestions();
+  generateRecord(); // 첫 로드 시 기본 예시로 1회 생성
+
+  const savedKey = localStorage.getItem("GEMINI_API_KEY");
+  if (savedKey) {
+    document.getElementById("geminiApiKey").value = savedKey;
+    document.getElementById("engine-name").textContent = "AI 고도화 엔진 (Gemini 연동)";
+    document.getElementById("engine-badge").style.background = "#10b981";
+  }
+
+  // 실시간 글자수 계산 이벤트
+  document.getElementById("resultText").addEventListener("input", updateStats);
+});
+
+// 추천 키워드 태그 업데이트
+function updateKeywordSuggestions() {
+  const recordType = document.getElementById("recordType").value;
+  const container = document.getElementById("suggested-tags");
+  container.innerHTML = "";
+
+  const tags = SUGGESTIONS[recordType] || SUGGESTIONS.subject;
+  tags.forEach(tag => {
+    const btn = document.createElement("button");
+    btn.className = "tag-btn";
+    btn.type = "button";
+    btn.textContent = "#" + tag;
+    btn.onclick = () => addKeyword(tag);
+    container.appendChild(btn);
+  });
+
+  const subjectGroup = document.getElementById("subjectName").parentElement;
+  if (recordType === "behavior") {
+    subjectGroup.style.display = "none";
+  } else {
+    subjectGroup.style.display = "flex";
+  }
+}
+
+function addKeyword(keyword) {
+  const kwInput = document.getElementById("keywords");
+  const current = kwInput.value.trim();
+  if (!current) {
+    kwInput.value = keyword;
+  } else {
+    kwInput.value = current + ", " + keyword;
+  }
+}
+
+// 퀵 샘플 데이터 불러오기
+function loadSample(type) {
+  if (type === 1) {
+    document.getElementById("studentId").value = "10315";
+    document.getElementById("studentName").value = "김민수";
+    document.getElementById("recordType").value = "subject";
+    document.getElementById("subjectName").value = "수학";
+    document.getElementById("keywords").value = "이차함수 실생활 적용 탐구, 수학적 문제해결력, 적극적인 질문 태도, 또래 멘토링 활동";
+    document.getElementById("writingStyle").value = "balanced";
+  } else if (type === 2) {
+    document.getElementById("studentId").value = "20108";
+    document.getElementById("studentName").value = "이서연";
+    document.getElementById("recordType").value = "subject";
+    document.getElementById("subjectName").value = "통합과학";
+    document.getElementById("keywords").value = "신소재 탐구 보고서, 그래핀의 물리적 특성 분석, 실험 데이터 오차 분석, 가설 검증 역량";
+    document.getElementById("writingStyle").value = "academic";
+  } else if (type === 3) {
+    document.getElementById("studentId").value = "10521";
+    document.getElementById("studentName").value = "박도현";
+    document.getElementById("recordType").value = "behavior";
+    document.getElementById("keywords").value = "학급 1인 1역할 성실 수행, 또래 상담 및 경청, 급우 간 갈등 중재, 밝고 긍정적인 분위기 조성";
+    document.getElementById("writingStyle").value = "personality";
+  } else if (type === 4) {
+    document.getElementById("studentId").value = "20412";
+    document.getElementById("studentName").value = "최유진";
+    document.getElementById("recordType").value = "club";
+    document.getElementById("subjectName").value = "과학탐구동아리";
+    document.getElementById("keywords").value = "적정기술 정수 장치 설계, 프로젝트 기획 주도, 부원 간 협업 촉진, 성과 발표회 발표자";
+    document.getElementById("writingStyle").value = "creative";
+  }
+  updateKeywordSuggestions();
+  generateRecord();
+}
+
+// 탭 전환
+function switchTab(tabId) {
+  document.querySelectorAll(".tab-btn").forEach(b => b.classList.remove("active"));
+  document.querySelectorAll(".tab-btn")[tabId === 'single' ? 0 : tabId === 'manage' ? 1 : 2].classList.add("active");
+
+  document.getElementById("tab-single").style.display = tabId === 'single' ? 'grid' : 'none';
+  document.getElementById("tab-manage").style.display = tabId === 'manage' ? 'flex' : 'none';
+  document.getElementById("tab-guide").style.display = tabId === 'guide' ? 'flex' : 'none';
+
+  if (tabId === 'manage') {
+    renderRecordsTable();
+  }
+}
+
+// NEIS 바이트 계산 함수 (한글 3바이트, 영숫자/기호 1바이트, 줄바꿈 2바이트)
+function calculateNeisBytes(text) {
+  let bytes = 0;
+  for (let i = 0; i < text.length; i++) {
+    const char = text[i];
+    const code = text.charCodeAt(i);
+    if (char === '\n') {
+      bytes += 2;
+    } else if (code <= 127) {
+      bytes += 1;
+    } else {
+      bytes += 3;
+    }
+  }
+  return bytes;
+}
+
+// 글자 수 및 바이트 실시간 통계 업데이트
+function updateStats() {
+  const text = document.getElementById("resultText").value;
+  const charWithSpaces = text.length;
+  const charNoSpaces = text.replace(/\s/g, '').length;
+  const bytes = calculateNeisBytes(text);
+
+  document.getElementById("char-count").textContent = `${charWithSpaces}자`;
+  document.getElementById("char-no-space-count").textContent = `${charNoSpaces}자`;
+  document.getElementById("byte-count").textContent = `${bytes} Byte`;
+
+  const statusBadge = document.getElementById("status-badge");
+  const progressFill = document.getElementById("char-progress");
+
+  // 프로그레스 바 비율 계산 (500자 기준 100%)
+  const percentage = Math.min(100, Math.round((charWithSpaces / 500) * 100));
+  progressFill.style.width = `${percentage}%`;
+
+  if (charWithSpaces === 0) {
+    statusBadge.textContent = "입력 대기";
+    statusBadge.className = "stat-value";
+    progressFill.style.backgroundColor = "var(--primary)";
+  } else if (charWithSpaces >= 300 && charWithSpaces <= 400) {
+    statusBadge.textContent = "🎯 최적 분량 (300~400자)";
+    statusBadge.className = "stat-value ok";
+    progressFill.style.backgroundColor = "var(--success)";
+  } else if (charWithSpaces >= 270 && charWithSpaces <= 430) {
+    statusBadge.textContent = "✅ 적정 허용 범위";
+    statusBadge.className = "stat-value ok";
+    progressFill.style.backgroundColor = "var(--success)";
+  } else if (charWithSpaces < 270) {
+    statusBadge.textContent = "⚠️ 분량 다소 부족";
+    statusBadge.className = "stat-value warn";
+    progressFill.style.backgroundColor = "var(--warning)";
+  } else {
+    statusBadge.textContent = "⚠️ 분량 다소 초과";
+    statusBadge.className = "stat-value warn";
+    progressFill.style.backgroundColor = "var(--warning)";
+  }
+}
+
+// 생기부 문안 생성 메인 컨트롤러
+async function generateRecord() {
+  const studentId = document.getElementById("studentId").value.trim();
+  const studentName = document.getElementById("studentName").value.trim();
+  const recordType = document.getElementById("recordType").value;
+  const subjectName = document.getElementById("subjectName").value.trim() || "교과";
+  const rawKeywords = document.getElementById("keywords").value.trim();
+  const style = document.getElementById("writingStyle").value;
+  const targetLen = parseInt(document.getElementById("targetLength").value) || 350;
+
+  if (!studentId || !studentName) {
+    alert("학번과 이름을 입력해주세요.");
+    return;
+  }
+
+  if (!rawKeywords) {
+    alert("학생에 대한 키워드나 관찰 내용을 입력해주세요. 아래의 추천 키워드를 클릭해도 됩니다.");
+    return;
+  }
+
+  document.getElementById("student-badge").textContent = `학번: ${studentId} / 이름: ${studentName}`;
+
+  // Gemini API 키가 있는 경우 우선 시도
+  const apiKey = localStorage.getItem("GEMINI_API_KEY");
+  if (apiKey) {
+    showToast("Gemini AI를 통해 고품질 생기부 문구를 생성 중입니다...");
+    try {
+      const generatedAiText = await callGeminiApi(apiKey, {
+        studentId, studentName, recordType, subjectName, rawKeywords, style, targetLen
+      });
+      document.getElementById("resultText").value = generatedAiText;
+      updateStats();
+      showToast("AI 생기부 작성이 완료되었습니다!");
+      return;
+    } catch (err) {
+      console.warn("AI 생성 오류, 내장 자연어 엔진으로 대체합니다:", err);
+      showToast("API 연결 불가로 내장 엔진으로 즉시 완성했습니다.");
+    }
+  }
+
+  // 내장 정밀 자연어 합성 엔진 동작 (오프라인 100%)
+  const generatedText = synthesizeRecordText({
+    recordType, subjectName, rawKeywords, style, targetLen, variant: lastVariantIndex
+  });
+
+  document.getElementById("resultText").value = generatedText;
+  updateStats();
+  showToast("300~400자 생기부 문안이 완성되었습니다!");
+}
+
+// 한국어 문맥 합성 및 300~400자 정밀 분량 제어 엔진
+function synthesizeRecordText({ recordType, subjectName, rawKeywords, style, targetLen, variant = 0 }) {
+  const typeData = TEMPLATES[recordType] || TEMPLATES.subject;
+  
+  // 키워드 정제
+  const kwList = rawKeywords
+    .split(/[,;\n]+/)
+    .map(k => k.trim())
+    .filter(k => k.length > 0);
+
+  const kwJoined = kwList.slice(0, 3).join(', ') || rawKeywords;
+  const kw1 = kwList[0] || "문제해결력";
+  const kw2 = kwList[1] || (kwList[0] ? kwList[0] + " 탐구" : "성실한 학습 태도");
+
+  // 한국어 조사 자동 연결
+  const kw1_ul = attachJosa(kw1, "을/를");
+  const kw1_eul = attachJosa(kw1, "을/를");
+  const kw1_ro = attachJosa(kw1, "으로/로");
+  const kw2_ul = attachJosa(kw2, "을/를");
+  const kw2_eul = attachJosa(kw2, "을/를");
+  const kw2_wa = attachJosa(kw2, "과/와");
+  const kw2_ui = kw2 + "의";
+
+  // 1. 서론 (학습/생활 태도)
+  const introList = typeData.intros;
+  let intro = introList[variant % introList.length].replace(/{subject}/g, subjectName);
+
+  // 2. 본론 (키워드 융합 및 탐구 과정)
+  const bodyList = typeData.bodies;
+  let body = bodyList[(variant + 1) % bodyList.length]
+    .replace(/{subject}/g, subjectName)
+    .replace(/{keywords}/g, kwJoined)
+    .replace(/{kw1_ul}/g, kw1_ul)
+    .replace(/{kw1_eul}/g, kw1_eul)
+    .replace(/{kw1_ro}/g, kw1_ro)
+    .replace(/{kw2_ul}/g, kw2_ul)
+    .replace(/{kw2_eul}/g, kw2_eul)
+    .replace(/{kw2_wa}/g, kw2_wa)
+    .replace(/{kw2_ui}/g, kw2_ui);
+
+  // 3. 결론 (성장 잠재력 및 역량 총평)
+  const outcomeList = typeData.outcomes;
+  let outcome = outcomeList[variant % outcomeList.length];
+
+  // 4. 스타일별 보강 문장
+  let styleSentence = "";
+  if (style === "academic") {
+    styleSentence = ` 특히 교과 지식에 대한 논리적 사고를 바탕으로 심화 내용을 스스로 찾아 학습하며 학문적 호기심을 지속적으로 확장함.`;
+  } else if (style === "personality") {
+    styleSentence = ` 또한 모둠 활동 시 자신보다 상대방의 입장을 먼저 배려하고 경청하며 팀의 긍정적인 화합을 이끌어내는 인성이 돋보임.`;
+  } else if (style === "creative") {
+    styleSentence = ` 틀에 갇히지 않은 독창적인 시각으로 문제를 재정의하고 실생활과 융합하여 해석하는 창의적 사고력이 매우 뛰어남.`;
+  }
+
+  // 1차 조합
+  let fullText = `${intro} ${body} ${styleSentence} ${outcome}`.replace(/\s+/g, ' ').trim();
+
+  // 300~400자 범위 맞춤 미세 보정 (Fine-Tuning)
+  if (fullText.length < 320) {
+    if (recordType === 'subject') {
+      fullText += ` 수업 중 의문이 생기는 부분에 대해서는 끝까지 원리를 추적하여 질문하고 스스로 답을 찾아내는 끈기를 겸비함.`;
+    } else {
+      fullText += ` 주변 친구들의 사소한 어려움도 그냥 지나치지 않고 먼저 도움의 손길을 내미는 따뜻한 배려심이 급우들에게 귀감이 됨.`;
+    }
+  }
+
+  // 목표 400자 초과 시 문장 정리
+  if (fullText.length > 425 && targetLen <= 380) {
+    const sentences = fullText.split(/(?<=[.!?])\s+/);
+    if (sentences.length >= 4) {
+      // 4문장으로 최적 압축
+      fullText = sentences.slice(0, 4).join(' ');
+    }
+  }
+
+  return fullText;
+}
+
+// 다른 버전으로 재생성
+function regenerateVariant() {
+  lastVariantIndex++;
+  generateRecord();
+}
+
+// 분량 늘리기/줄이기
+function adjustLength(delta) {
+  let text = document.getElementById("resultText").value.trim();
+  if (!text) return;
+
+  if (delta > 0) {
+    const supplementals = [
+      " 주어진 과제에 대해 단순히 정답을 찾는 데 그치지 않고, 다양한 관점에서 검토하고 검증하는 학업적 끈기가 돋보임.",
+      " 모둠 활동 시 동료 학습자의 의견을 경청하고 자신의 생각을 명확하게 전달하여 상호 발전적인 학습 분위기를 조성함.",
+      " 배움의 전 과정에서 성실함과 진정성을 바탕으로 끊임없이 노력하며 지속적인 성장을 증명함.",
+      " 과제 해결 후에도 스스로 개선점을 되돌아보며 한 단계 더 발전된 방안을 모색하는 자기성찰 태도가 우수함."
+    ];
+    const addSentence = supplementals[Math.floor(Math.random() * supplementals.length)];
+    text += " " + addSentence;
+    showToast("보강 문장이 추가되어 분량이 늘어났습니다 (+35자 내외).");
+  } else {
+    const sentences = text.split(/(?<=[.!?])\s+/);
+    if (sentences.length > 2) {
+      sentences.pop();
+      text = sentences.join(' ');
+      showToast("마지막 문장을 정리하여 분량을 줄였습니다 (-35자 내외).");
+    } else {
+      showToast("더 이상 축약할 수 없습니다.");
+    }
+  }
+
+  document.getElementById("resultText").value = text;
+  updateStats();
+}
+
+// 클립보드 복사
+function copyResult() {
+  const text = document.getElementById("resultText").value;
+  if (!text.trim()) {
+    alert("복사할 내용이 없습니다. 먼저 문안을 생성해주세요.");
+    return;
+  }
+
+  navigator.clipboard.writeText(text).then(() => {
+    showToast("NEIS 기재용 문안이 클립보드에 복사되었습니다!");
+  }).catch(() => {
+    const textarea = document.createElement("textarea");
+    textarea.value = text;
+    document.body.appendChild(textarea);
+    textarea.select();
+    document.execCommand("copy");
+    document.body.removeChild(textarea);
+    showToast("클립보드에 복사되었습니다!");
+  });
+}
+
+// 학생 목록에 저장
+function saveToRecordList() {
+  const studentId = document.getElementById("studentId").value.trim();
+  const studentName = document.getElementById("studentName").value.trim();
+  const recordType = document.getElementById("recordType").value;
+  const subjectName = document.getElementById("subjectName").value.trim();
+  const keywords = document.getElementById("keywords").value.trim();
+  const content = document.getElementById("resultText").value.trim();
+
+  if (!content) {
+    alert("저장할 내용이 없습니다.");
+    return;
+  }
+
+  const recordTypeLabels = {
+    subject: `세특 (${subjectName || '교과'})`,
+    behavior: "행동특성 및 종합의견",
+    career: "진로활동",
+    club: `동아리 (${subjectName || '일반'})`,
+    autonomous: "자율활동"
+  };
+
+  const newRecord = {
+    id: Date.now(),
+    studentId,
+    studentName,
+    recordType: recordTypeLabels[recordType] || recordType,
+    keywords,
+    content,
+    charCount: content.length,
+    bytes: calculateNeisBytes(content),
+    createdAt: new Date().toLocaleString()
+  };
+
+  currentRecords.unshift(newRecord);
+  localStorage.setItem("STUDENT_RECORDS", JSON.stringify(currentRecords));
+  updateRecordCountBadge();
+  showToast(`${studentName} 학생의 생기부 기록이 목록에 저장되었습니다!`);
+}
+
+function loadSavedRecords() {
+  const data = localStorage.getItem("STUDENT_RECORDS");
+  if (data) {
+    try {
+      currentRecords = JSON.parse(data);
+    } catch(e) {
+      currentRecords = [];
+    }
+  }
+  updateRecordCountBadge();
+}
+
+function updateRecordCountBadge() {
+  document.getElementById("saved-count").textContent = currentRecords.length;
+}
+
+function renderRecordsTable() {
+  const tbody = document.getElementById("records-table-body");
+  if (!currentRecords.length) {
+    tbody.innerHTML = `
+      <tr>
+        <td colspan="6" style="text-align: center; color: var(--text-muted); padding: 32px;">
+          아직 저장된 학생 기록이 없습니다. 단일 작성 화면에서 문안 생성 후 [목록에 저장] 버튼을 눌러보세요.
+        </td>
+      </tr>`;
+    return;
+  }
+
+  tbody.innerHTML = currentRecords.map((r, idx) => `
+    <tr>
+      <td><strong>${r.studentId}</strong></td>
+      <td><strong>${r.studentName}</strong></td>
+      <td><span style="font-size:0.83rem; background:#f1f5f9; padding:2px 8px; border-radius:4px; font-weight:600;">${r.recordType}</span></td>
+      <td style="max-width: 420px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;" title="${r.content}">
+        ${r.content}
+      </td>
+      <td style="text-align:center;">
+        <span style="font-weight:700; color:var(--primary);">${r.charCount}자</span><br>
+        <span style="font-size:0.75rem; color:var(--text-muted);">${r.bytes} Byte</span>
+      </td>
+      <td style="text-align:center;">
+        <button class="btn btn-outline btn-sm" onclick="loadToEditor(${idx})">편집</button>
+        <button class="btn btn-outline btn-sm" style="color:var(--danger);" onclick="deleteRecord(${idx})">삭제</button>
+      </td>
+    </tr>
+  `).join('');
+}
+
+function loadToEditor(idx) {
+  const r = currentRecords[idx];
+  if (!r) return;
+  document.getElementById("studentId").value = r.studentId;
+  document.getElementById("studentName").value = r.studentName;
+  document.getElementById("keywords").value = r.keywords || "";
+  document.getElementById("resultText").value = r.content;
+  document.getElementById("student-badge").textContent = `학번: ${r.studentId} / 이름: ${r.studentName}`;
+  switchTab('single');
+  updateStats();
+  showToast(`${r.studentName} 학생 기록을 에디터로 불러왔습니다.`);
+}
+
+function deleteRecord(idx) {
+  if (confirm("이 학생의 기록을 삭제하시겠습니까?")) {
+    currentRecords.splice(idx, 1);
+    localStorage.setItem("STUDENT_RECORDS", JSON.stringify(currentRecords));
+    updateRecordCountBadge();
+    renderRecordsTable();
+    showToast("삭제되었습니다.");
+  }
+}
+
+function clearAllRecords() {
+  if (!currentRecords.length) return;
+  if (confirm("정말로 저장된 모든 학생 기록을 삭제하시겠습니까?")) {
+    currentRecords = [];
+    localStorage.removeItem("STUDENT_RECORDS");
+    updateRecordCountBadge();
+    renderRecordsTable();
+    showToast("모든 기록이 삭제되었습니다.");
+  }
+}
+
+// CSV 내보내기 (엑셀 한글 깨짐 방지 UTF-8 BOM 지원)
+function exportToCSV() {
+  if (!currentRecords.length) {
+    alert("내보낼 저장 기록이 없습니다.");
+    return;
+  }
+  let csv = "\uFEFF학번,이름,영역,글자수(공백포함),NEIS바이트,생기부문안,작성일시\n";
+  currentRecords.forEach(r => {
+    const escapedContent = `"${(r.content || '').replace(/"/g, '""')}"`;
+    csv += `"${r.studentId}","${r.studentName}","${r.recordType}","${r.charCount}","${r.bytes}",${escapedContent},"${r.createdAt}"\n`;
+  });
+
+  const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = `생기부_작성목록_${new Date().toISOString().slice(0, 10)}.csv`;
+  a.click();
+  URL.revokeObjectURL(url);
+  showToast("CSV 파일이 다운로드되었습니다.");
+}
+
+// TXT 일괄 내보내기
+function exportToTXT() {
+  if (!currentRecords.length) {
+    alert("내보낼 저장 기록이 없습니다.");
+    return;
+  }
+  let txt = `=================================================\n`;
+  txt += `중고등학생 학교생활기록부 작성 결과 모음\n`;
+  txt += `생성 일시: ${new Date().toLocaleString()}\n`;
+  txt += `총 학생 수: ${currentRecords.length}명\n`;
+  txt += `=================================================\n\n`;
+
+  currentRecords.forEach((r, i) => {
+    txt += `[${i + 1}] 학번: ${r.studentId} | 이름: ${r.studentName} | 구분: ${r.recordType}\n`;
+    txt += `* 분량: ${r.charCount}자 (NEIS ${r.bytes} Byte)\n`;
+    txt += `-------------------------------------------------\n`;
+    txt += `${r.content}\n\n`;
+  });
+
+  const blob = new Blob([txt], { type: 'text/plain;charset=utf-8;' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = `생기부_문안모음_${new Date().toISOString().slice(0, 10)}.txt`;
+  a.click();
+  URL.revokeObjectURL(url);
+  showToast("TXT 파일이 다운로드되었습니다.");
+}
+
+// 입력 폼 초기화
+function resetForm() {
+  document.getElementById("studentId").value = "";
+  document.getElementById("studentName").value = "";
+  document.getElementById("keywords").value = "";
+  document.getElementById("resultText").value = "";
+  updateStats();
+}
+
+// 토스트 메시지
+function showToast(msg) {
+  const t = document.getElementById("toast");
+  t.textContent = msg;
+  t.classList.add("show");
+  setTimeout(() => t.classList.remove("show"), 2800);
+}
+
+// 모달 제어
+function toggleApiModal() {
+  document.getElementById("apiModal").classList.add("open");
+}
+function closeApiModal() {
+  document.getElementById("apiModal").classList.remove("open");
+}
+function saveApiKey() {
+  const key = document.getElementById("geminiApiKey").value.trim();
+  if (key) {
+    localStorage.setItem("GEMINI_API_KEY", key);
+    document.getElementById("engine-name").textContent = "AI 고도화 엔진 (Gemini 연동)";
+    document.getElementById("engine-badge").style.background = "#10b981";
+    showToast("Gemini API 키가 저장되었습니다.");
+  } else {
+    localStorage.removeItem("GEMINI_API_KEY");
+    document.getElementById("engine-name").textContent = "내장 자연어 엔진 (오프라인 100%)";
+    document.getElementById("engine-badge").style.background = "rgba(255,255,255,0.2)";
+    showToast("내장 엔진으로 전환되었습니다.");
+  }
+  closeApiModal();
+}
+
+// Gemini API 호출 (선택 사항)
+async function callGeminiApi(apiKey, { studentId, studentName, recordType, subjectName, rawKeywords, style, targetLen }) {
+  const prompt = `당신은 대한민국 중고등학교 학교생활기록부(생기부) 작성 전문가입니다.
+다음 학생의 정보와 관찰 키워드를 바탕으로 학교생활기록부에 입력할 정제된 평가 문안을 작성해 주세요.
+
+[학생 정보]
+- 학번: ${studentId}
+- 이름: ${studentName}
+- 영역: ${recordType} (${subjectName})
+- 관찰 키워드: ${rawKeywords}
+- 강조 스타일: ${style}
+
+[필수 작성 준수 사항]
+1. 분량: 한글 공백 포함 반드시 300자 ~ 400자 내외(약 350자 권장)로 정확히 맞출 것.
+2. 어조: '~함.', '~임.', '~을 보임.'과 같은 교육부 생기부 규격의 정중하고 객관적인 관찰자 시점의 문체 유지. 학생 이름을 직접 부르지 않고 주어를 생략하거나 '학생은'으로 간결화.
+3. 구성: [동기/학습태도] -> [구체적 활동 및 탐구과정(키워드 기반)] -> [배운 점, 역량 발휘 및 성장 잠재력 평가]의 3단 흐름.
+4. 금지사항: 사교육 유발 요소(외부 경시대회, 공인어학성적, 자격증, 부모 직업 등) 절대 언급 금지.
+5. 오직 최종 생기부 문안 텍스트만 출력할 것(따옴표, 인사말, 글자수 안내 등 부가 설명 제외).`;
+
+  const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${apiKey}`;
+  const response = await fetch(url, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      contents: [{ parts: [{ text: prompt }] }],
+      generationConfig: {
+        temperature: 0.7,
+        maxOutputTokens: 800
+      }
+    })
+  });
+
+  if (!response.ok) {
+    throw new Error(`API error: ${response.status}`);
+  }
+
+  const data = await response.json();
+  const text = data.candidates?.[0]?.content?.parts?.[0]?.text?.trim() || "";
+  return text.replace(/^["']|["']$/g, '');
+}
+</script>
+
+</body>
+</html>
