@@ -1,5 +1,8 @@
 # 🎓 중고등학생 학교생활기록부(생기부) 작성 도우미
 
+[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https%3A%2F%2Fgithub.com%2FUHleet5677%2Fstudent-record-generator)
+[![GitHub Pages](https://img.shields.io/badge/GitHub%20Pages-Live%20Demo-brightgreen)](https://uhleet5677.github.io/student-record-generator/)
+
 학생의 **학번**, **이름**, 그리고 **관찰 키워드**를 입력하면 교육부 훈령 및 NEIS 규격에 부합하는 **한글 300~400자 내외**의 맞춤형 생기부 문안을 즉시 생성해 주는 프로그램입니다.
 
 ---
